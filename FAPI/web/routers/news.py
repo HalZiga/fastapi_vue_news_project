@@ -3,7 +3,6 @@ from typing import Annotated, List, Optional
 
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from web.database import get_db
 from web.Guard import get_current_user, role_required
 from web.model_news import NewsStatusEnum, RoleEnum, TagEnum

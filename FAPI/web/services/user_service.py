@@ -6,7 +6,6 @@ from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload, selectinload
-
 from web.Guard import hash_password
 from web.model_news import Role as RoleModel
 from web.model_news import RoleEnum

@@ -10,7 +10,6 @@ from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload
-
 from web.database import get_db
 from web.model_news import User
 from web.schemes import User as UserPydantic

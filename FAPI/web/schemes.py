@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import Annotated, Optional
 
 from pydantic import BaseModel, EmailStr, Field
-
 from web.model_news import NewsStatusEnum, RoleEnum, TagEnum
 
 

@@ -6,11 +6,11 @@
 
 Для запуска проекта вам потребуются:
 
--   **Python**:
-    Загрузите и установите с официального сайта Python версии 3.13.5 или выше: [https://www.python.org/downloads/](https://www.python.org/downloads/)
+- **Python**:
+  Загрузите и установите с официального сайта Python версии 3.13.5 или выше: [https://www.python.org/downloads/](https://www.python.org/downloads/)
 
--   **Node.js**:
-    Загрузите и установите с официального сайта (рекомендуется LTS-версия): [https://nodejs.org/en/download/](https://nodejs.org/en/download/)
+- **Node.js**:
+  Загрузите и установите с официального сайта (рекомендуется LTS-версия): [https://nodejs.org/en/download/](https://nodejs.org/en/download/)
 
 ---
 
@@ -23,27 +23,30 @@
 ### 1. Запуск бэкенда
 
 1.  **Перейдите в папку бэкэнда:**
+
     ```bash
     cd FAPI
     ```
-    
 
 2.  **Создайте виртуальное окружение:**
+
     ```bash
     python -m venv .venv
     ```
 
 3.  **Активируйте виртуальное окружение:**
-    -   На Windows:
-        ```bash
-        .venv\Scripts\activate
-        ```
-    -   На macOS/Linux:
-        ```bash
-        source .venv/bin/activate
-        ```
+
+    - На Windows:
+      ```bash
+      .venv\Scripts\activate
+      ```
+    - На macOS/Linux:
+      ```bash
+      source .venv/bin/activate
+      ```
 
 4.  **Установите зависимости Python:**
+
     ```bash
     pip install -r requirements.txt
     ```
@@ -59,11 +62,13 @@
 ### 2. Запуск фронтенда
 
 1.  **Перейдите в папку фронтенда:**
+
     ```bash
     cd frontend_folder_name
     ```
 
 2.  **Установите зависимости Node.js:**
+
     ```bash
     npm install
     ```
@@ -85,7 +90,7 @@
 
         login = "moderator"
         password = "moderpass"
-        
+
 3.  Пользователи
 
         login="reader1"
@@ -93,5 +98,3 @@
 
         login = "reader2"
         password = "reader2pass"
-
-

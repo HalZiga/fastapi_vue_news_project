@@ -4,7 +4,6 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-
 from web.Guard import hash_password
 from web.model_news import Role as RoleModel
 from web.model_news import RoleEnum

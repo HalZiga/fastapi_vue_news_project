@@ -3,7 +3,6 @@ from typing import List
 from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
-
 from web.database import get_db
 from web.Guard import role_required
 from web.model_news import RoleEnum

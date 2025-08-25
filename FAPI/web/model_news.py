@@ -14,7 +14,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.sqlite import JSON as SQLiteJSON
 from sqlalchemy.orm import relationship
-
 from web.database import Base
 
 
