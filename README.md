@@ -77,12 +77,17 @@
 ### Логины и пароли для входа
 
 1.  Админ
+
         login = admin
         password = adminpass
+
 2.  Модератор
+
         login = "moderator"
         password = "moderpass"
+        
 3.  Пользователи
+
         login="reader1"
         password="reader1pass"
 
