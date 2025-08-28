@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import { useAuthStore } from '../stores/auth';
-import type { UserForModerator, User } from '../types'; // Импортируем типы
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import { useAuthStore } from "../stores/auth";
+import type { User } from "../types/Index";
 
 const authStore = useAuthStore();
-const users = ref<User[] | UserForModerator[]>([]); // Объявляем, что массив может содержать разные типы
+const users = ref<User[]>([]); // Объявляем, что массив может содержать разные типы
 const loading = ref<boolean>(true);
 const error = ref<string | null>(null);
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = "http://localhost:8000";
 
 const fetchUsers = async () => {
   loading.value = true;
@@ -17,15 +17,15 @@ const fetchUsers = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/users`, {
       headers: {
-        'Authorization': `Bearer ${authStore.token}`
-      }
+        Authorization: `Bearer ${authStore.token}`,
+      },
     });
     users.value = response.data;
   } catch (err: unknown) {
     if (axios.isAxiosError(err) && err.response) {
-      error.value = err.response.data.detail || 'Неизвестная ошибка';
+      error.value = err.response.data.detail || "Неизвестная ошибка";
     } else {
-      error.value = 'Не удалось получить список пользователей.';
+      error.value = "Не удалось получить список пользователей.";
     }
   } finally {
     loading.value = false;
@@ -42,12 +42,18 @@ onMounted(fetchUsers);
       <p>Загрузка пользователей...</p>
     </div>
     <div v-else-if="error">
-      <p class="error-message">{{ error }}</p>
+      <p class="error-message">
+        {{ error }}
+      </p>
     </div>
     <ul v-else-if="users.length">
-      <li v-for="user in users" :key="user.id" class="user-item">
+      <li
+        v-for="user in users"
+        :key="user.id"
+        class="user-item"
+      >
         <router-link :to="`/users/${user.id}`">
-          {{ user.login }} - {{ 'FIO' in user ? user.FIO : 'Скрыто' }}
+          {{ user.login }} - {{ "FIO" in user ? user.FIO : "Скрыто" }}
         </router-link>
       </li>
     </ul>

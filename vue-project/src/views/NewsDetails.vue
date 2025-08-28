@@ -1,32 +1,31 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
-import axios from 'axios';
-import { useRoute, useRouter } from 'vue-router';
-import { useAuthStore } from '../stores/auth';
-import type { NewsItem } from '../types/Index.ts';
+import { ref, onMounted, watch } from "vue";
+import axios from "axios";
+import { useRoute, useRouter } from "vue-router";
+import { useAuthStore } from "../stores/auth";
+import type { NewsItem } from "../types/Index.ts";
 
 const newsItem = ref<NewsItem | null>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
 const isPublishing = ref(false);
-const publishMessage = ref('');
-const publishMessageColor = ref('black');
-
+const publishMessage = ref("");
+const publishMessageColor = ref("black");
 
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = "http://localhost:8000";
 
 const fetchNewsDetails = async () => {
   try {
     loading.value = true;
-    publishMessage.value = '';
+    publishMessage.value = "";
 
     const newsId = route.params.id;
     if (!newsId) {
-      error.value = 'Идентификатор новости не указан.';
+      error.value = "Идентификатор новости не указан.";
       loading.value = false;
       return;
     }
@@ -34,24 +33,26 @@ const fetchNewsDetails = async () => {
     const headers: Record<string, string> = {};
 
     if (authStore.isAuthenticated) {
-      headers['Authorization'] = `Bearer ${authStore.getToken}`;
+      headers["Authorization"] = `Bearer ${authStore.getToken}`;
     }
 
-    const response = await axios.get(`${API_BASE_URL}/news/${newsId}`, { headers });
+    const response = await axios.get(`${API_BASE_URL}/news/${newsId}`, {
+      headers,
+    });
     newsItem.value = response.data;
   } catch (err: unknown) {
-    if (axios.isAxiosError(err) && err.response){
-      console.error('Ошибка при загрузке деталей новости:', err);
+    if (axios.isAxiosError(err) && err.response) {
+      console.error("Ошибка при загрузке деталей новости:", err);
       if (err.response.status === 404) {
-        error.value = 'Новость не найдена.';
+        error.value = "Новость не найдена.";
       } else if (err.response.status === 403) {
-        error.value = 'У вас нет доступа к этой новости.';
+        error.value = "У вас нет доступа к этой новости.";
       } else {
-        error.value = 'Не удалось загрузить детали новости. Пожалуйста, попробуйте позже.';
+        error.value =
+          "Не удалось загрузить детали новости. Пожалуйста, попробуйте позже.";
       }
       newsItem.value = null; // Очищаем новость при ошибке
     }
-
   } finally {
     loading.value = false;
   }
@@ -63,34 +64,38 @@ const publishNews = async () => {
   const token = authStore.getToken;
 
   if (!token) {
-    publishMessage.value = 'Вы не авторизованы для публикации новости.';
-    publishMessageColor.value = 'red';
+    publishMessage.value = "Вы не авторизованы для публикации новости.";
+    publishMessageColor.value = "red";
     return;
   }
 
   isPublishing.value = true;
-  publishMessage.value = '';
+  publishMessage.value = "";
 
   try {
-    await axios.patch(`${API_BASE_URL}/news/publish/${newsId}`, {}, {
-      headers: {
-        'accept': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    publishMessage.value = 'Новость успешно опубликована!';
-    publishMessageColor.value = 'green';
+    await axios.patch(
+      `${API_BASE_URL}/news/publish/${newsId}`,
+      {},
+      {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    publishMessage.value = "Новость успешно опубликована!";
+    publishMessageColor.value = "green";
 
     await fetchNewsDetails();
   } catch (err: unknown) {
-    if  (axios.isAxiosError(err) && err.response) {
-      console.error('Ошибка при публикации новости:', err);
+    if (axios.isAxiosError(err) && err.response) {
+      console.error("Ошибка при публикации новости:", err);
       if (err.response.data && err.response.data.detail) {
         publishMessage.value = `Ошибка публикации: ${err.response.data.detail}`;
       } else {
-        publishMessage.value = 'Произошла ошибка при публикации новости.';
+        publishMessage.value = "Произошла ошибка при публикации новости.";
       }
-      publishMessageColor.value = 'red';
+      publishMessageColor.value = "red";
     }
   } finally {
     isPublishing.value = false;
@@ -99,89 +104,145 @@ const publishNews = async () => {
 
 // метод удалть
 const deleteNews = async () => {
-  if (confirm('Вы уверены, что хотите удалить эту новость?')) {
+  if (confirm("Вы уверены, что хотите удалить эту новость?")) {
     try {
       const newsId = route.params.id;
-      const headers = { 'Authorization': `Bearer ${authStore.getToken}` };
+      const headers = { Authorization: `Bearer ${authStore.getToken}` };
 
-      console.log('Отправляем DELETE-запрос на:', `${API_BASE_URL}/news/${newsId}`);
+      console.log(
+        "Отправляем DELETE-запрос на:",
+        `${API_BASE_URL}/news/${newsId}`,
+      );
 
       await axios.delete(`${API_BASE_URL}/news/${newsId}`, { headers });
-      alert('Новость успешно удалена!');
-      await router.push('/');
+      alert("Новость успешно удалена!");
+      await router.push("/");
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.response) {
-        console.error('Ошибка при удалении новости:', err);
+        console.error("Ошибка при удалении новости:", err);
         if (err.response.data && err.response.data.detail) {
           alert(`Не удалось удалить новость: ${err.response.data.detail}`);
         } else {
-          alert('Не удалось удалить новость. Произошла неизвестная ошибка.');
-        }}
-
+          alert("Не удалось удалить новость. Произошла неизвестная ошибка.");
+        }
+      }
     }
   }
 };
 
 const editNews = () => {
   if (newsItem.value) {
-    router.push({ name: 'UpdateNews', params: { id: newsItem.value.id } });
+    router.push({ name: "UpdateNews", params: { id: newsItem.value.id } });
   } else {
-    console.error('Не удалось найти новость для редактирования.');
+    console.error("Не удалось найти новость для редактирования.");
   }
 };
-
 
 onMounted(() => {
   fetchNewsDetails();
 });
 
-
-watch(() => route.params.id, (newId, oldId) => {
-  if (newId !== oldId) {
-    fetchNewsDetails();
-  }
-});
+watch(
+  () => route.params.id,
+  (newId, oldId) => {
+    if (newId !== oldId) {
+      fetchNewsDetails();
+    }
+  },
+);
 
 const goBack = () => {
-  router.push({ name: 'NewsList' });
+  router.push({ name: "NewsList" });
 };
 </script>
 
 <template>
   <div class="news-details-container">
-    <button @click="goBack" class="back-button">← Назад к новостям</button>
+    <button
+      class="back-button"
+      @click="goBack"
+    >
+      ← Назад к новостям
+    </button>
 
-    <div v-if="loading" class="loading-message">Загрузка новости...</div>
-    <div v-else-if="error" class="error-message">{{ error }}</div>
+    <div
+      v-if="loading"
+      class="loading-message"
+    >
+      Загрузка новости...
+    </div>
+    <div
+      v-else-if="error"
+      class="error-message"
+    >
+      {{ error }}
+    </div>
     <div v-else-if="newsItem">
       <h2>{{ newsItem.title }}</h2>
       <p class="news-meta">
-        Автор: **{{ newsItem.author || 'Неизвестен' }}** |
-        Опубликовано: **{{ newsItem.published_at ? new Date(newsItem.published_at).toLocaleDateString() : 'Не опубликовано' }}** |
-        Просмотры: **{{ newsItem.views }}**
+        Автор: **{{ newsItem.author || "Неизвестен" }}** | Опубликовано: **{{
+          newsItem.published_at
+            ? new Date(newsItem.published_at).toLocaleDateString()
+            : "Не опубликовано"
+        }}** | Просмотры: **{{ newsItem.views }}**
       </p>
       <div class="news-tags">
-        <span v-for="tag in newsItem.tags" :key="tag" class="tag">{{ tag }}</span>
+        <span
+          v-for="tag in newsItem.tags"
+          :key="tag"
+          class="tag"
+        >{{
+          tag
+        }}</span>
       </div>
-      <div class="news-body" v-html="newsItem.body"></div>
+      <div
+        class="news-body"
+        v-html="newsItem.body"
+      />
 
-      <div v-if="newsItem.can_publish && newsItem.status !== 'published'" class="publish-action-area">
-        <button @click="publishNews" :disabled="isPublishing" class="publish-button">
-          {{ isPublishing ? 'Публикация...' : 'Опубликовать новость' }}
+      <div
+        v-if="newsItem.can_publish && newsItem.status !== 'published'"
+        class="publish-action-area"
+      >
+        <button
+          :disabled="isPublishing"
+          class="publish-button"
+          @click="publishNews"
+        >
+          {{ isPublishing ? "Публикация..." : "Опубликовать новость" }}
         </button>
-        <p v-if="publishMessage" :style="{ color: publishMessageColor }" class="publish-status-message">
+        <p
+          v-if="publishMessage"
+          :style="{ color: publishMessageColor }"
+          class="publish-status-message"
+        >
           {{ publishMessage }}
         </p>
       </div>
 
-      <div v-if="newsItem.can_delete_update" class="action-buttons">
-        <button @click="editNews" class="edit-button">Обновить</button>
+      <div
+        v-if="newsItem.can_delete_update"
+        class="action-buttons"
+      >
+        <button
+          class="edit-button"
+          @click="editNews"
+        >
+          Обновить
+        </button>
 
-        <button @click="deleteNews" class="delete-button">Удалить</button>
+        <button
+          class="delete-button"
+          @click="deleteNews"
+        >
+          Удалить
+        </button>
       </div>
-
     </div>
-    <div v-else class="no-news-message">
+    <div
+      v-else
+      class="no-news-message"
+    >
       Новость не найдена или произошла ошибка.
     </div>
   </div>
@@ -195,7 +256,7 @@ const goBack = () => {
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
   color: #333;
 }
@@ -267,7 +328,9 @@ h2 {
   border-radius: 8px;
 }
 
-.loading-message, .error-message, .no-news-message {
+.loading-message,
+.error-message,
+.no-news-message {
   text-align: center;
   padding: 20px;
   font-size: 1.1em;
@@ -312,7 +375,8 @@ h2 {
   font-weight: bold;
 }
 
-.edit-button, .delete-button {
+.edit-button,
+.delete-button {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;

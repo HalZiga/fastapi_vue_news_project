@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import axios from 'axios';
-import { useAuthStore } from '../stores/auth';
-import type { User } from '../types/Index.ts';
+import { ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import axios from "axios";
+import { useAuthStore } from "../stores/auth";
+import type { User } from "../types/Index.ts";
 
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 
-const user = ref<User  | null>(null);
+const user = ref<User | null>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = "http://localhost:8000";
 
 const fetchUser = async () => {
   const userId = route.params.id;
   if (!userId) {
-    error.value = 'Идентификатор пользователя не указан.';
+    error.value = "Идентификатор пользователя не указан.";
     loading.value = false;
     return;
   }
@@ -26,15 +26,15 @@ const fetchUser = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/users/${userId}`, {
       headers: {
-        'Authorization': `Bearer ${authStore.token}`
-      }
+        Authorization: `Bearer ${authStore.token}`,
+      },
     });
     user.value = response.data;
   } catch (err: unknown) {
     if (axios.isAxiosError(err) && err.response) {
-      error.value = err.response.data.detail || 'Неизвестная ошибка';
+      error.value = err.response.data.detail || "Неизвестная ошибка";
     } else {
-      error.value = 'Не удалось получить данные пользователя.';
+      error.value = "Не удалось получить данные пользователя.";
     }
   } finally {
     loading.value = false;
@@ -42,47 +42,59 @@ const fetchUser = async () => {
 };
 
 const deleteUser = async () => {
-  if (!confirm(`Вы уверены, что хотите удалить пользователя ${user.value?.login}?`)) {
+  if (
+    !confirm(
+      `Вы уверены, что хотите удалить пользователя ${user.value?.login}?`,
+    )
+  ) {
     return;
   }
 
   try {
     await axios.delete(`${API_BASE_URL}/users/${user.value?.id}`, {
       headers: {
-        'Authorization': `Bearer ${authStore.token}`
-      }
+        Authorization: `Bearer ${authStore.token}`,
+      },
     });
-    alert('Пользователь успешно удалён!');
-    await router.push('/users');
+    alert("Пользователь успешно удалён!");
+    await router.push("/users");
   } catch (err: unknown) {
     if (axios.isAxiosError(err) && err.response) {
       alert(`Ошибка удаления: ${err.response.data.detail}`);
     } else {
-      alert('Произошла ошибка при удалении пользователя.');
+      alert("Произошла ошибка при удалении пользователя.");
     }
   }
 };
 
 const RedactedUser = async () => {
   if (user.value) {
-    await router.push({ name: 'UpdateUser', params: { id: user.value.id } });
+    await router.push({ name: "UpdateUser", params: { id: user.value.id } });
   }
 };
 
 const toggleBanStatus = async () => {
   const newStatus = !user.value?.in_ban;
-  const actionText = newStatus ? 'забанить' : 'разбанить';
+  const actionText = newStatus ? "забанить" : "разбанить";
 
-  if (!confirm(`Вы уверены, что хотите ${actionText} пользователя ${user.value?.login}?`)) {
+  if (
+    !confirm(
+      `Вы уверены, что хотите ${actionText} пользователя ${user.value?.login}?`,
+    )
+  ) {
     return;
   }
 
   try {
-    await axios.patch(`${API_BASE_URL}/users/${user.value?.id}/ban_status`, { in_ban: newStatus }, {
-      headers: {
-        'Authorization': `Bearer ${authStore.token}`
-      }
-    });
+    await axios.patch(
+      `${API_BASE_URL}/users/${user.value?.id}/ban_status`,
+      { in_ban: newStatus },
+      {
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
+        },
+      },
+    );
     if (user.value) {
       user.value.in_ban = newStatus;
     }
@@ -91,7 +103,7 @@ const toggleBanStatus = async () => {
     if (axios.isAxiosError(err) && err.response) {
       alert(`Ошибка: ${err.response.data.detail}`);
     } else {
-      alert('Произошла ошибка при изменении статуса бана.');
+      alert("Произошла ошибка при изменении статуса бана.");
     }
   }
 };
@@ -105,32 +117,51 @@ onMounted(fetchUser);
       <p>Загрузка данных пользователя...</p>
     </div>
     <div v-else-if="error">
-      <p class="error-message">{{ error }}</p>
+      <p class="error-message">
+        {{ error }}
+      </p>
     </div>
     <div v-else-if="user">
       <h2>Профиль: {{ user.login }}</h2>
       <p><strong>ID:</strong> {{ user.id }}</p>
-      <p><strong>ФИО:</strong> {{ 'FIO' in user ? user.FIO : 'Недоступно' }}</p>
+      <p><strong>ФИО:</strong> {{ "FIO" in user ? user.FIO : "Недоступно" }}</p>
       <p><strong>Email:</strong> {{ user.email }}</p>
-      <p><strong>Статус:</strong> {{ user.in_ban ? 'Забанен' : 'Активен' }}</p>
-      <p><strong>Роли:</strong> {{ user.roles?.map(role => role.name).join(', ') }}</p>
-      <p><strong>Зарегестрирован:</strong> {{user.created}}</p>
+      <p><strong>Статус:</strong> {{ user.in_ban ? "Забанен" : "Активен" }}</p>
+      <p>
+        <strong>Роли:</strong>
+        {{ user.roles?.map((role) => role.name).join(", ") }}
+      </p>
+      <p><strong>Зарегестрирован:</strong> {{ user.created }}</p>
 
-      <div v-if="authStore.roles.includes('admin')" class="admin-actions">
-        <button @click="RedactedUser" class="redact-button">
+      <div
+        v-if="authStore.roles.includes('admin')"
+        class="admin-actions"
+      >
+        <button
+          class="redact-button"
+          @click="RedactedUser"
+        >
           Редактировать
         </button>
       </div>
 
-      <div v-if="authStore.roles.includes('admin')" class="admin-actions">
-        <button @click="toggleBanStatus" class="ban-button">
-          {{ user.in_ban ? 'Разбанить' : 'Забанить' }}
+      <div
+        v-if="authStore.roles.includes('admin')"
+        class="admin-actions"
+      >
+        <button
+          class="ban-button"
+          @click="toggleBanStatus"
+        >
+          {{ user.in_ban ? "Разбанить" : "Забанить" }}
         </button>
-        <button @click="deleteUser" class="delete-button">
+        <button
+          class="delete-button"
+          @click="deleteUser"
+        >
           Удалить
         </button>
       </div>
-
     </div>
     <div v-else>
       <p>Пользователь не найден.</p>
@@ -147,7 +178,7 @@ onMounted(fetchUser);
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   color: #333;
-  font-family: 'Arial', sans-serif;
+  font-family: "Arial", sans-serif;
 }
 
 h2 {
@@ -232,5 +263,4 @@ p strong {
   background-color: #cccccc;
   cursor: not-allowed;
 }
-
 </style>

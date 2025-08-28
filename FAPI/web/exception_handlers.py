@@ -19,7 +19,7 @@ async def integrity_error_handler(
 ) -> JSONResponse:
     """Обрабатывает ошибки целостности данных из базы данных."""
     # Пример: обработка ошибки уникальности
-    if "UniqueViolationError" in str(exc):
+    if "Uniq    ueViolationError" in str(exc):
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
             content={"detail": "Пользователь с такими данными уже существует."},

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import axios, { AxiosError } from 'axios';
-import { useRouter } from 'vue-router';
-import { useAuthStore } from '../stores/auth';
-import type { NewsItem } from '../types/Index.ts';
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import { useRouter } from "vue-router";
+import { useAuthStore } from "../stores/auth";
+import type { NewsItem } from "../types/Index.ts";
 
 const news = ref<NewsItem[]>([]);
 const loading = ref(true);
@@ -12,21 +12,21 @@ const error = ref<string | null>(null);
 const router = useRouter();
 const authStore = useAuthStore();
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = "http://localhost:8000";
 
 const fetchNews = async () => {
   try {
     loading.value = true;
     error.value = null;
 
-    let url = '';
+    let url = "";
     const headers: Record<string, string> = {
-      'Authorization': `Bearer ${authStore.getToken}`
+      Authorization: `Bearer ${authStore.getToken}`,
     };
 
     if (authStore.isAuthenticated) {
       url = `${API_BASE_URL}/news/`;
-      headers['Authorization'] = `Bearer ${authStore.getToken}`;
+      headers["Authorization"] = `Bearer ${authStore.getToken}`;
     } else {
       url = `${API_BASE_URL}/news/published`;
     }
@@ -34,8 +34,8 @@ const fetchNews = async () => {
     const response = await axios.get(url, { headers });
     news.value = response.data;
   } catch (err) {
-    console.error('Ошибка при загрузке новостей:', err);
-    error.value = 'Не удалось загрузить новости. Пожалуйста, попробуйте позже.';
+    console.error("Ошибка при загрузке новостей:", err);
+    error.value = "Не удалось загрузить новости. Пожалуйста, попробуйте позже.";
   } finally {
     loading.value = false;
   }
@@ -53,23 +53,65 @@ onMounted(() => {
 <template>
   <div class="news-list-container">
     <h2>
-      {{ authStore.isAuthenticated ? 'Все новости' : 'Опубликованные новости' }}
+      {{ authStore.isAuthenticated ? "Все новости" : "Опубликованные новости" }}
     </h2>
 
-    <div v-if="loading" class="loading-message">Загрузка новостей...</div>
-    <div v-else-if="error" class="error-message">{{ error }}</div>
-    <div v-else-if="news.length === 0" class="no-news-message">
+    <div
+      v-if="loading"
+      class="loading-message"
+    >
+      Загрузка новостей...
+    </div>
+    <div
+      v-else-if="error"
+      class="error-message"
+    >
+      {{ error }}
+    </div>
+    <div
+      v-else-if="news.length === 0"
+      class="no-news-message"
+    >
       Пока нет новостей.
     </div>
-    <div v-else class="news-cards">
-      <div v-for="item in news" :key="item.id" class="news-card" @click="viewNewsDetails(item.id)">
+    <div
+      v-else
+      class="news-cards"
+    >
+      <div
+        v-for="item in news"
+        :key="item.id"
+        class="news-card"
+        @click="viewNewsDetails(item.id)"
+      >
         <h3>{{ item.title }}</h3>
-          <p class="news-author">Автор: {{ item.author || 'Неизвестен' }}</p>
-        <p class="news-status" :class="item.status">{{ item.status }}</p> <p class="news-published">Опубликовано: {{ item.published_at ? new Date(item.published_at).toLocaleDateString() : 'N/A' }}</p>
+        <p class="news-author">
+          Автор: {{ item.author || "Неизвестен" }}
+        </p>
+        <p
+          class="news-status"
+          :class="item.status"
+        >
+          {{ item.status }}
+        </p>
+        <p class="news-published">
+          Опубликовано:
+          {{
+            item.published_at
+              ? new Date(item.published_at).toLocaleDateString()
+              : "N/A"
+          }}
+        </p>
         <div class="news-tags">
-          <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>
+          <span
+            v-for="tag in item.tags"
+            :key="tag"
+            class="tag"
+          >{{ tag }}</span>
         </div>
-        <p class="news-views">Просмотры: {{ item.views }}</p>
+        <p class="news-views">
+          Просмотры: {{ item.views }}
+        </p>
       </div>
     </div>
   </div>
@@ -83,7 +125,7 @@ onMounted(() => {
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 h2 {
@@ -120,7 +162,9 @@ h2 {
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -146,7 +190,8 @@ h2 {
   margin-bottom: 5px;
 }
 
-.news-author, .news-published {
+.news-author,
+.news-published {
   font-size: 0.85em;
   color: #777;
 }
@@ -175,7 +220,6 @@ h2 {
   background-color: #f8d7da;
   color: #721c24;
 }
-
 
 .news-tags {
   margin-top: 10px;

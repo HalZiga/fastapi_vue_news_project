@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import { useAuthStore } from './stores/auth';
-import { useRouter } from 'vue-router';
+import { RouterLink, RouterView } from "vue-router";
+import { useAuthStore } from "./stores/auth";
+import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
 const router = useRouter();
 
 const logout = (): void => {
   authStore.clearToken();
-  router.push('/login');  // Перенаправляем на страницу входа
+  router.push("/login"); // Перенаправляем на страницу входа
 };
 </script>
 
@@ -16,19 +16,25 @@ const logout = (): void => {
   <div id="app-layout">
     <header class="main-header">
       <nav class="main-nav">
-
         <div class="nav-links-left">
-          <RouterLink to="/" class="nav-link">Новости</RouterLink>
+          <RouterLink
+            to="/"
+            class="nav-link"
+          >
+            Новости
+          </RouterLink>
           <RouterLink
             v-if="authStore.isAuthenticated"
             to="/create"
-            class="nav-link">
+            class="nav-link"
+          >
             Создать новость
           </RouterLink>
           <RouterLink
             v-if="authStore.roles && authStore.roles.includes('admin')"
             to="/users"
-            class="nav-link">
+            class="nav-link"
+          >
             Просмотреть пользователей
           </RouterLink>
         </div>
@@ -38,12 +44,23 @@ const logout = (): void => {
             <RouterLink
               v-if="authStore.isAuthenticated && authStore.id"
               :to="{ name: 'UpdateUser', params: { id: authStore.id } }"
-              class="nav-link user-login">
+              class="nav-link user-login"
+            >
               {{ authStore.login }}
             </RouterLink>
-            <a @click="logout" class="nav-link logout-link" href="#">Выйти</a>
+            <a
+              class="nav-link logout-link"
+              href="#"
+              @click="logout"
+            >Выйти</a>
           </template>
-          <RouterLink v-else to="/login" class="nav-link">Войти</RouterLink>
+          <RouterLink
+            v-else
+            to="/login"
+            class="nav-link"
+          >
+            Войти
+          </RouterLink>
         </div>
       </nav>
     </header>
@@ -55,7 +72,6 @@ const logout = (): void => {
 </template>
 
 <style>
-
 .user-login {
   color: #42b983; /* Или любой другой цвет, который вам нравится */
   font-weight: bold;
@@ -118,7 +134,9 @@ body {
   font-weight: bold;
   padding: 8px 15px;
   border-radius: 5px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .nav-link:hover {
@@ -152,7 +170,8 @@ body {
    но я покажу их здесь для примера, чтобы вы понимали, что нужно изменить */
 .news-list-container,
 .login-container,
-.news-details-container { /* Добавьте сюда классы ваших корневых элементов View-компонентов */
+.news-details-container {
+  /* Добавьте сюда классы ваших корневых элементов View-компонентов */
   background-color: #ffffff; /* Белый фон для карточек/форм */
   color: #333; /* Темный текст для белого фона */
   border-radius: 8px;

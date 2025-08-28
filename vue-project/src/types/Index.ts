@@ -51,3 +51,28 @@ export interface User {
   created: string;
   roles: Role[];
 }
+
+export interface UserUpdatePayload {
+  login: string;
+  FIO?: string;
+  phone?: string;
+  email?: string;
+  in_ban?: boolean;
+  role_ids?: number[];
+}
+
+export interface UserForm {
+  login: string | null;
+  FIO: string | null;
+  phone: string | null;
+  email: string | null;
+  in_ban: boolean;
+  roles: Role[];
+}
+
+export interface AuthStore {
+  token: string | null;
+  login: string | null;
+  roles: string[];
+  id: number | null;
+}
