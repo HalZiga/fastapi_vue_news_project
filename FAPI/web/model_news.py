@@ -1,0 +1,120 @@
+import enum
+from datetime import datetime, timezone
+
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Enum,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    Text,
+)
+from sqlalchemy.dialects.sqlite import JSON as SQLiteJSON
+from sqlalchemy.orm import relationship
+from web.database import Base
+
+
+class TagEnum(enum.Enum):
+    Live = "Live"
+    AI = "AI"
+    SCIENCE = "Science"
+    POLITICS = "Politics"
+    SPORT = "Sport"
+    TECH = "Tech"
+    GADGETS = "Gadgets"
+    GAMING = "Gaming"
+    BUSINESS = "Business"
+    FINANCE = "Finance"
+    CULTURE = "Culture"
+    MOVIES = "Movies"
+    HEALTH = "Health"
+    TRAVEL = "Travel"
+    ENVIRONMENT = "Environment"
+    EDUCATION = "Education"
+    FITNESS = "Fitness"
+    FOOD = "Food"
+    LIFESTYLE = "Lifestyle"
+
+
+class RoleEnum(enum.Enum):
+    Admin = "admin"
+    Moderator = "moderator"
+    Reader = "reader"
+    Author = "author"
+
+
+class NewsStatusEnum(enum.Enum):
+    Draft = "draft"
+    Published = "published"
+    Archived = "archived"
+
+
+user_roles = Table(
+    "user_roles",
+    Base.metadata,
+    Column("user_id", Integer, ForeignKey("users.id"), primary_key=True),
+    Column("role_id", Integer, ForeignKey("roles.id"), primary_key=True),
+)
+
+
+# ------------------------- мб Mapped использовать
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    login = Column(String(50), unique=True, nullable=False)
+    FIO = Column(String(100))
+    phone = Column(String(12))
+    email = Column(String(100), unique=True, nullable=False)
+    password = Column(String(255), nullable=False)
+    in_ban = Column(Boolean, default=False)
+    created = Column(DateTime, default=datetime.now(timezone.utc))
+    updated = Column(DateTime)
+    ban_at = Column(DateTime)
+
+    roles = relationship(
+        "Role", secondary=user_roles, back_populates="users", lazy="selectin"
+    )
+    created_news_items = relationship(
+        "WebNews", back_populates="created_by", lazy="selectin"
+    )
+
+
+class WebNews(Base):
+    __tablename__ = "news"
+
+    id = Column(Integer, primary_key=True)
+    title = Column(String, nullable=False)
+    body = Column(Text, nullable=False)
+    URL = Column(String, unique=True)
+    created_by_user_id = Column(Integer, ForeignKey("users.id"))
+    status = Column(
+        Enum(NewsStatusEnum), default=NewsStatusEnum.Draft, nullable=False, index=True
+    )
+    created_at = Column(DateTime)
+    published_at = Column(DateTime)
+    redacted_at = Column(DateTime)
+    tags = Column(SQLiteJSON, default=list, nullable=False)
+    category = Column(Enum(TagEnum), nullable=False, default=TagEnum.Live)  #
+    views = Column(Integer, default=0)
+
+    created_by = relationship(
+        "User",
+        foreign_keys=[created_by_user_id],
+        back_populates="created_news_items",
+        lazy="selectin",
+    )
+
+
+class Role(Base):
+    __tablename__ = "roles"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(Enum(RoleEnum), nullable=True)
+
+    users = relationship(
+        "User", secondary=user_roles, back_populates="roles", lazy="selectin"
+    )
