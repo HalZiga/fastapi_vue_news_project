@@ -56,28 +56,14 @@ onMounted(() => {
       {{ authStore.isAuthenticated ? "Все новости" : "Опубликованные новости" }}
     </h2>
 
-    <div
-      v-if="loading"
-      class="loading-message"
-    >
-      Загрузка новостей...
-    </div>
-    <div
-      v-else-if="error"
-      class="error-message"
-    >
+    <div v-if="loading" class="loading-message">Загрузка новостей...</div>
+    <div v-else-if="error" class="error-message">
       {{ error }}
     </div>
-    <div
-      v-else-if="news.length === 0"
-      class="no-news-message"
-    >
+    <div v-else-if="news.length === 0" class="no-news-message">
       Пока нет новостей.
     </div>
-    <div
-      v-else
-      class="news-cards"
-    >
+    <div v-else class="news-cards">
       <div
         v-for="item in news"
         :key="item.id"
@@ -85,13 +71,8 @@ onMounted(() => {
         @click="viewNewsDetails(item.id)"
       >
         <h3>{{ item.title }}</h3>
-        <p class="news-author">
-          Автор: {{ item.author || "Неизвестен" }}
-        </p>
-        <p
-          class="news-status"
-          :class="item.status"
-        >
+        <p class="news-author">Автор: {{ item.author || "Неизвестен" }}</p>
+        <p class="news-status" :class="item.status">
           {{ item.status }}
         </p>
         <p class="news-published">
@@ -103,15 +84,9 @@ onMounted(() => {
           }}
         </p>
         <div class="news-tags">
-          <span
-            v-for="tag in item.tags"
-            :key="tag"
-            class="tag"
-          >{{ tag }}</span>
+          <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>
         </div>
-        <p class="news-views">
-          Просмотры: {{ item.views }}
-        </p>
+        <p class="news-views">Просмотры: {{ item.views }}</p>
       </div>
     </div>
   </div>

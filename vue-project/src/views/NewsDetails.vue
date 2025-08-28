@@ -4,6 +4,7 @@ import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
 import { useAuthStore } from "../stores/auth";
 import type { NewsItem } from "../types/Index.ts";
+import DOMPurify from "dompurify";
 
 const newsItem = ref<NewsItem | null>(null);
 const loading = ref(true);
@@ -39,6 +40,8 @@ const fetchNewsDetails = async () => {
     const response = await axios.get(`${API_BASE_URL}/news/${newsId}`, {
       headers,
     });
+
+    response.data.body = DOMPurify.sanitize(response.data.body);
     newsItem.value = response.data;
   } catch (err: unknown) {
     if (axios.isAxiosError(err) && err.response) {
@@ -158,23 +161,10 @@ const goBack = () => {
 
 <template>
   <div class="news-details-container">
-    <button
-      class="back-button"
-      @click="goBack"
-    >
-      ← Назад к новостям
-    </button>
+    <button class="back-button" @click="goBack">← Назад к новостям</button>
 
-    <div
-      v-if="loading"
-      class="loading-message"
-    >
-      Загрузка новости...
-    </div>
-    <div
-      v-else-if="error"
-      class="error-message"
-    >
+    <div v-if="loading" class="loading-message">Загрузка новости...</div>
+    <div v-else-if="error" class="error-message">
       {{ error }}
     </div>
     <div v-else-if="newsItem">
@@ -187,18 +177,12 @@ const goBack = () => {
         }}** | Просмотры: **{{ newsItem.views }}**
       </p>
       <div class="news-tags">
-        <span
-          v-for="tag in newsItem.tags"
-          :key="tag"
-          class="tag"
-        >{{
+        <span v-for="tag in newsItem.tags" :key="tag" class="tag">{{
           tag
         }}</span>
       </div>
-      <div
-        class="news-body"
-        v-html="newsItem.body"
-      />
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <div class="news-body" v-html="newsItem.body" />
 
       <div
         v-if="newsItem.can_publish && newsItem.status !== 'published'"
@@ -220,29 +204,13 @@ const goBack = () => {
         </p>
       </div>
 
-      <div
-        v-if="newsItem.can_delete_update"
-        class="action-buttons"
-      >
-        <button
-          class="edit-button"
-          @click="editNews"
-        >
-          Обновить
-        </button>
+      <div v-if="newsItem.can_delete_update" class="action-buttons">
+        <button class="edit-button" @click="editNews">Обновить</button>
 
-        <button
-          class="delete-button"
-          @click="deleteNews"
-        >
-          Удалить
-        </button>
+        <button class="delete-button" @click="deleteNews">Удалить</button>
       </div>
     </div>
-    <div
-      v-else
-      class="no-news-message"
-    >
+    <div v-else class="no-news-message">
       Новость не найдена или произошла ошибка.
     </div>
   </div>

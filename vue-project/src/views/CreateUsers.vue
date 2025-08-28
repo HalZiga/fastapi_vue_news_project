@@ -62,62 +62,33 @@ const createUser = async () => {
     <form @submit.prevent="createUser">
       <div class="form-group">
         <label for="login">Логин</label>
-        <input
-          id="login"
-          v-model="user.login"
-          type="text"
-          required
-        >
+        <input id="login" v-model="user.login" type="text" required />
       </div>
 
       <div class="form-group">
         <label for="fio">ФИО</label>
-        <input
-          id="fio"
-          v-model="user.FIO"
-          type="text"
-          required
-        >
+        <input id="fio" v-model="user.FIO" type="text" required />
       </div>
 
       <div class="form-group">
         <label for="phone">Телефон</label>
-        <input
-          id="phone"
-          v-model="user.phone"
-          type="text"
-        >
+        <input id="phone" v-model="user.phone" type="text" />
       </div>
 
       <div class="form-group">
         <label for="email">Email</label>
-        <input
-          id="email"
-          v-model="user.email"
-          type="email"
-          required
-        >
+        <input id="email" v-model="user.email" type="email" required />
       </div>
 
       <div class="form-group">
         <label for="password">Пароль</label>
-        <input
-          id="password"
-          v-model="user.password"
-          type="password"
-          required
-        >
+        <input id="password" v-model="user.password" type="password" required />
       </div>
 
-      <button type="submit">
-        Создать
-      </button>
+      <button type="submit">Создать</button>
     </form>
 
-    <p
-      v-if="message"
-      :class="{ success: isSuccess, error: !isSuccess }"
-    >
+    <p v-if="message" :class="{ success: isSuccess, error: !isSuccess }">
       {{ message }}
     </p>
   </div>

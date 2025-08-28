@@ -3,7 +3,12 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import { useAuthStore } from "../stores/auth";
-import type { User, Role, UserUpdatePayload, UserForm } from "../types/Index.ts";
+import type {
+  User,
+  Role,
+  UserUpdatePayload,
+  UserForm,
+} from "../types/Index.ts";
 
 const route = useRoute();
 const router = useRouter();
@@ -78,15 +83,15 @@ onMounted(() => {
 const updateUser = async () => {
   try {
     const payload: UserUpdatePayload = {
-      login: formData.value.login || '',
-      FIO: formData.value.FIO || '',
-      phone: formData.value.phone || '',
-      email: formData.value.email || '',
+      login: formData.value.login || "",
+      FIO: formData.value.FIO || "",
+      phone: formData.value.phone || "",
+      email: formData.value.email || "",
     };
 
     if (authStore.roles.includes("admin")) {
       payload.in_ban = formData.value.in_ban;
-      payload.role_ids = formData.value.roles?.map(role => role.id) || [];
+      payload.role_ids = formData.value.roles?.map((role) => role.id) || [];
     }
 
     await axios.patch(
@@ -125,41 +130,22 @@ const updateUser = async () => {
         {{ error }}
       </p>
     </div>
-    <form
-      v-else
-      @submit.prevent="updateUser"
-    >
+    <form v-else @submit.prevent="updateUser">
       <div class="form-group">
         <label for="login">Логин</label>
-        <input
-          id="login"
-          v-model="formData.login"
-          type="text"
-        >
+        <input id="login" v-model="formData.login" type="text" />
       </div>
       <div class="form-group">
         <label for="FIO">ФИО</label>
-        <input
-          id="FIO"
-          v-model="formData.FIO"
-          type="text"
-        >
+        <input id="FIO" v-model="formData.FIO" type="text" />
       </div>
       <div class="form-group">
         <label for="phone">Телефон</label>
-        <input
-          id="phone"
-          v-model="formData.phone"
-          type="text"
-        >
+        <input id="phone" v-model="formData.phone" type="text" />
       </div>
       <div class="form-group">
         <label for="email">Email</label>
-        <input
-          id="email"
-          v-model="formData.email"
-          type="email"
-        >
+        <input id="email" v-model="formData.email" type="email" />
       </div>
 
       <div v-if="authStore.roles.includes('admin')">
@@ -175,17 +161,12 @@ const updateUser = async () => {
               v-model="formData.roles"
               type="checkbox"
               :value="role.id"
-            >
+            />
             <label :for="`role-${role.id}`">{{ role.name }}</label>
           </div>
         </div>
       </div>
-      <button
-        type="submit"
-        class="submit-button"
-      >
-        Сохранить изменения
-      </button>
+      <button type="submit" class="submit-button">Сохранить изменения</button>
     </form>
   </div>
 </template>

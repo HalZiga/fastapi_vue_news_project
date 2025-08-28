@@ -91,7 +91,7 @@ const submitNews = async () => {
           type="text"
           placeholder="Введите заголовок новости"
           required
-        >
+        />
       </div>
 
       <div class="form-group">
@@ -107,22 +107,9 @@ const submitNews = async () => {
 
       <div class="form-group">
         <label for="category">Категория</label>
-        <select
-          id="category"
-          v-model="newsData.category"
-          required
-        >
-          <option
-            disabled
-            value=""
-          >
-            Выберите категорию
-          </option>
-          <option
-            v-for="tag in availableCategories"
-            :key="tag"
-            :value="tag"
-          >
+        <select id="category" v-model="newsData.category" required>
+          <option disabled value="">Выберите категорию</option>
+          <option v-for="tag in availableCategories" :key="tag" :value="tag">
             {{ tag }}
           </option>
         </select>
@@ -135,15 +122,10 @@ const submitNews = async () => {
           v-model="tagsInput"
           type="text"
           placeholder="Введите теги через запятую (например: спорт, футбол, чемпионат)"
-        >
+        />
       </div>
 
-      <button
-        type="submit"
-        class="submit-button"
-      >
-        Опубликовать
-      </button>
+      <button type="submit" class="submit-button">Опубликовать</button>
     </form>
   </div>
 </template>

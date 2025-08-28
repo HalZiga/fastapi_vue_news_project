@@ -102,22 +102,11 @@ const submitUpdate = async () => {
 <template>
   <div class="update-news-container">
     <h2>Обновление новости</h2>
-    <div
-      v-if="loading"
-      class="loading-message"
-    >
-      Загрузка данных новости...
-    </div>
-    <div
-      v-else-if="error"
-      class="error-message"
-    >
+    <div v-if="loading" class="loading-message">Загрузка данных новости...</div>
+    <div v-else-if="error" class="error-message">
       {{ error }}
     </div>
-    <form
-      v-else
-      @submit.prevent="submitUpdate"
-    >
+    <form v-else @submit.prevent="submitUpdate">
       <div class="form-group">
         <label for="title">Заголовок</label>
         <input
@@ -126,7 +115,7 @@ const submitUpdate = async () => {
           type="text"
           placeholder="Введите заголовок новости"
           required
-        >
+        />
       </div>
 
       <div class="form-group">
@@ -142,22 +131,9 @@ const submitUpdate = async () => {
 
       <div class="form-group">
         <label for="category">Категория</label>
-        <select
-          id="category"
-          v-model="newsData.category"
-          required
-        >
-          <option
-            disabled
-            value=""
-          >
-            Выберите категорию
-          </option>
-          <option
-            v-for="tag in availableCategories"
-            :key="tag"
-            :value="tag"
-          >
+        <select id="category" v-model="newsData.category" required>
+          <option disabled value="">Выберите категорию</option>
+          <option v-for="tag in availableCategories" :key="tag" :value="tag">
             {{ tag }}
           </option>
         </select>
@@ -170,15 +146,10 @@ const submitUpdate = async () => {
           v-model="tagsInput"
           type="text"
           placeholder="Введите теги через запятую"
-        >
+        />
       </div>
 
-      <button
-        type="submit"
-        class="submit-button"
-      >
-        Сохранить изменения
-      </button>
+      <button type="submit" class="submit-button">Сохранить изменения</button>
     </form>
   </div>
 </template>

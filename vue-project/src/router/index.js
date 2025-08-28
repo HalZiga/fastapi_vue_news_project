@@ -26,7 +26,10 @@ const router = createRouter({
       path: "/create",
       name: "createNews",
       component: () => import("../views/CreateNews.vue"),
-      meta: { requiresAuth: true, requiredRoles: ["admin", "moderator", "author"] },
+      meta: {
+        requiresAuth: true,
+        requiredRoles: ["admin", "moderator", "author"],
+      },
     },
     {
       path: "/news/update/:id",

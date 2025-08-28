@@ -133,34 +133,17 @@ onMounted(fetchUser);
       </p>
       <p><strong>Зарегестрирован:</strong> {{ user.created }}</p>
 
-      <div
-        v-if="authStore.roles.includes('admin')"
-        class="admin-actions"
-      >
-        <button
-          class="redact-button"
-          @click="RedactedUser"
-        >
+      <div v-if="authStore.roles.includes('admin')" class="admin-actions">
+        <button class="redact-button" @click="RedactedUser">
           Редактировать
         </button>
       </div>
 
-      <div
-        v-if="authStore.roles.includes('admin')"
-        class="admin-actions"
-      >
-        <button
-          class="ban-button"
-          @click="toggleBanStatus"
-        >
+      <div v-if="authStore.roles.includes('admin')" class="admin-actions">
+        <button class="ban-button" @click="toggleBanStatus">
           {{ user.in_ban ? "Разбанить" : "Забанить" }}
         </button>
-        <button
-          class="delete-button"
-          @click="deleteUser"
-        >
-          Удалить
-        </button>
+        <button class="delete-button" @click="deleteUser">Удалить</button>
       </div>
     </div>
     <div v-else>

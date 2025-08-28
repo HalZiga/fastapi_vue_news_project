@@ -17,12 +17,7 @@ const logout = (): void => {
     <header class="main-header">
       <nav class="main-nav">
         <div class="nav-links-left">
-          <RouterLink
-            to="/"
-            class="nav-link"
-          >
-            Новости
-          </RouterLink>
+          <RouterLink to="/" class="nav-link"> Новости </RouterLink>
           <RouterLink
             v-if="authStore.isAuthenticated"
             to="/create"
@@ -48,19 +43,9 @@ const logout = (): void => {
             >
               {{ authStore.login }}
             </RouterLink>
-            <a
-              class="nav-link logout-link"
-              href="#"
-              @click="logout"
-            >Выйти</a>
+            <a class="nav-link logout-link" href="#" @click="logout">Выйти</a>
           </template>
-          <RouterLink
-            v-else
-            to="/login"
-            class="nav-link"
-          >
-            Войти
-          </RouterLink>
+          <RouterLink v-else to="/login" class="nav-link"> Войти </RouterLink>
         </div>
       </nav>
     </header>

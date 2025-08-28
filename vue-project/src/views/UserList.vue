@@ -47,11 +47,7 @@ onMounted(fetchUsers);
       </p>
     </div>
     <ul v-else-if="users.length">
-      <li
-        v-for="user in users"
-        :key="user.id"
-        class="user-item"
-      >
+      <li v-for="user in users" :key="user.id" class="user-item">
         <router-link :to="`/users/${user.id}`">
           {{ user.login }} - {{ "FIO" in user ? user.FIO : "Скрыто" }}
         </router-link>

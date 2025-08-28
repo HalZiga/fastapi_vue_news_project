@@ -45,25 +45,13 @@ const login = async (): Promise<void> => {
     <form @submit.prevent="login">
       <div class="form-group">
         <label for="username">Имя пользователя:</label>
-        <input
-          id="username"
-          v-model="username"
-          type="text"
-          required
-        >
+        <input id="username" v-model="username" type="text" required />
       </div>
       <div class="form-group">
         <label for="password">Пароль:</label>
-        <input
-          id="password"
-          v-model="password"
-          type="password"
-          required
-        >
+        <input id="password" v-model="password" type="password" required />
       </div>
-      <button type="submit">
-        Войти
-      </button>
+      <button type="submit">Войти</button>
     </form>
     <p
       v-if="message"
